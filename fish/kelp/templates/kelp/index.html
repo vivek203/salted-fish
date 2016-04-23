@@ -1,3 +1,5 @@
+{% load staticfiles %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,12 +14,16 @@
     <title>Agency - Start Bootstrap Theme</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/chart1.css" rel="stylesheet">
-    <link href="css/chart2.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'kelp/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'kelp/css/chart1.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'kelp/css/chart2.css' %}" />
+    <!-- <link href="css/bootstrap.min.css" rel="stylesheet"> -->
+<!--     <link href="css/chart1.css" rel="stylesheet">
+    <link href="css/chart2.css" rel="stylesheet"> -->
 
     <!-- Custom CSS -->
-    <link href="css/agency.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'kelp/css/agency.css' %}" />
+<!--     <link href="css/agency.css" rel="stylesheet"> -->
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
