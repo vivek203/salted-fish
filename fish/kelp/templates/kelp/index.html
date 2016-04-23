@@ -179,7 +179,7 @@
 			  .append("g")
 				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-			d3.tsv("data/data.tsv", type, function(error, data) {
+			d3.tsv("{% static 'kelp/data/data.tsv' %}", type, function(error, data) {
 			  if (error) throw error;
 
 			  x.domain(data.map(function(d) { return d.letter; }));
@@ -265,7 +265,7 @@
 						.x(function(d) { return ( x(d.date)+10 ); })
 						.y(function(d) { return y1(d.temperature); });
 
-				d3.tsv("data/dateTemp.tsv", type, function(error, data) {
+				d3.tsv("{% static 'kelp/data/dateTemp.tsv' %}", type, function(error, data) {
 				  if (error) throw error;
 
 				  x.domain(data.map(function(d) { return d.date; }));
