@@ -22,3 +22,9 @@ class SpawningStreamLength(models.Model):
     actual_length = models.FloatField()
     station_id = models.CharField(max_length=100)
     station_name = models.CharField(max_length=200)
+
+class GDD(models.Model):
+    gdd = models.FloatField()
+    timestamp = models.DateTimeField()
+    spawning_likelihood = models.CharField(max_length=100)
+    
