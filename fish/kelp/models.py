@@ -12,6 +12,17 @@ class WaterTemperature(models.Model):
     class Meta:
         unique_together = (("station_id", "timestamp"),)
 
+
+class DailyWaterTemperature(models.Model):
+    station_id = models.CharField(max_length=100)
+    station_name = models.CharField(max_length=200)
+    timestamp = models.DateTimeField()
+    value = models.FloatField()
+
+    class Meta:
+        unique_together = (("station_id", "timestamp"),)
+
+
 class DischargeData(models.Model):
     station_id = models.CharField(max_length=100)
     station_name = models.CharField(max_length=200)
@@ -21,6 +32,7 @@ class DischargeData(models.Model):
 
     class Meta:
         unique_together = (("station_id", "timestamp"),)
+
 
 class SpawningStreamLength(models.Model):
     incubation_time = models.FloatField()

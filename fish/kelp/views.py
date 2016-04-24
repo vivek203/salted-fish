@@ -6,6 +6,7 @@ from utilities.getdata import DataMap
 from .models import WaterTemperature as WT
 from .models import DischargeData as DD
 from .models import GDD
+from .models import SpawningStreamLength as SPWN
 from utilities.soap import SoapCalls
 import pytz
 import numpy as np
