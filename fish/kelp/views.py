@@ -166,4 +166,3 @@ def get_temperature_csv(request):
     # writer.writerow(['3', '15'])
 
     return response
->>>>>>> Stashed changes
