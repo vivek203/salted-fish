@@ -8,6 +8,7 @@ from .models import DischargeData as DD
 from .models import GDD
 from utilities.soap import SoapCalls
 import pytz
+import numpy as np
 
 def index(request):
     return render(request, 'kelp/index.html')
@@ -33,9 +34,13 @@ def populate_full_water_temperature(request):
             temperature_x = obj.GetTimeSeriesData(x, ['WT'], sDate.isoformat(), eDate.isoformat(), DataFormat)
             for x in temperature_x['TimeSeriesData']:
                 wt_datetime = DT.strptime(x['TimeStamp'], '%m/%d/%Y %I:%M:%S %p')
-                wt = WT(station_id=x['StationID'], station_name=x['StationName'],
-                        timestamp=wt_datetime, value=x['Value'])
-                wt.save()
+                try:
+                    wt = WT(station_id=x['StationID'], station_name=x['StationName'],
+                            timestamp=wt_datetime, value=x['Value'])
+                    wt.save()
+                except Exception:
+                    continue
+
     return HttpResponse('Written to database FULL')
 
 
@@ -56,47 +61,66 @@ def populate_curr_water_temperature(request):
         temperature_x = obj.GetTimeSeriesData(x, ['WT'], sDate.isoformat(), eDate, DataFormat)
         for x in temperature_x['TimeSeriesData']:
             wt_datetime = DT.strptime(x['TimeStamp'], '%m/%d/%Y %I:%M:%S %p')
-            wt = WT(station_id=x['StationID'], station_name=x['StationName'],
+            try:
+                wt = WT(station_id=x['StationID'], station_name=x['StationName'],
                     timestamp=wt_datetime, value=x['Value'])
-            wt.save()
+                wt.save()
+            except Exception:
+                continue
     return HttpResponse('Written to database CURRENT')
 
 
 def populate_full_discharge(request):
     obj = SoapCalls()
     DataFormat = 'json'
-    sensors = obj.GetSensors(DataFormat)
 
     sDate = DT(2016, 1, 1)
-    eDate = sDate + datetime.timedelta(days=2)
-    stationNumbers = get_station_num(sensors, 'DISCHARGE')
 
     temperature_data = None
     count = 0
 
-    while eDate < sDate + datetime.timedelta(days=4): #DT.today():
-        count = count + 1
-        print ("**** Writing batch: %s" % count)
-        sDate = eDate + datetime.timedelta(days=1)
-        eDate = eDate + datetime.timedelta(days=2)
-        for x in stationNumbers:
-            discharge_x = obj.GetTimeSeriesData(x, ['DISCHARGE'], sDate.isoformat(), eDate.isoformat(), DataFormat)
-            for x in discharge_x['TimeSeriesData']:
-                wt_datetime = DT.strptime(x['TimeStamp'], '%m/%d/%Y %I:%M:%S %p')
-                wt = DD(station_id=x['StationID'], station_name=x['StationName'],
-                        timestamp=wt_datetime, value=x['Value'])
-                wt.save()
-    return HttpResponse('Written to database FULL')
+    data = np.random.uniform(0, 4, 115)
+    data = np.around(data, 1)
+    data = data.tolist()
 
-#
-# def gdd_last_updated_date(request):
-#     dm = DataMap()
-#     dbObj = GDD.objects.latest('timestamp')
-#     delta = DT.today() - dbObj.timestamp.isoformat()
-#     if delta.days > 1:
-#         print delta.days
-#         #jsonObj = dm.calculate_GDD(dbObj.timestamp.isoformat())
-#     return HttpResponse('Fetch last updated date - GDD')
+    i = -1
+    while sDate < DT.today():
+        count = count + 1
+        print ("**** Writing discharge batch: %s" % count)
+        i = i + 1
+        date = sDate
+        sDate = sDate + datetime.timedelta(days=1)
+        print i
+        vel = (0.2692 * data[i]) + 0.0984
+        try:
+            dObj = DD(station_id='HY040', station_name='KROSNO CR',
+                timestamp=date, value=data[i], velocity=vel)
+            dObj.save()
+        except Exception:
+            continue
+    return HttpResponse('Written to discharge database FULL')
+
+def populate_discharge(request):
+    obj = SoapCalls()
+    DataFormat = 'json'
+
+    dbObj = DD.objects.latest('timestamp')
+    sDate = DT.combine(datetime.date.today(), datetime.time.min)
+
+    temperature_data = None
+    count = 0
+
+    data = np.random.uniform(0, 4, 1)
+    data = np.around(data, 1)
+    data = data.tolist()
+    vel = 0.2692 * data[0] + 0.0984
+    try:
+        dObj = DD(station_id='HY040', station_name='KROSNO CR',
+                timestamp=sDate, value=data[0], velocity=vel)
+        dObj.save()
+    except Exception:
+        pass
+    return HttpResponse('Written to discharge database FULL')
 
 def get_station_num(sensors, sensorName):
     sensordata = filter(lambda x: x['SensorName'] in ['%s' % (sensorName)], sensors['Sensors'])
@@ -104,20 +128,19 @@ def get_station_num(sensors, sensorName):
     return stationNumbers
 
 def calc_gdd(request):
-	wt_objects = WT.objects.all()
-	day_dict = {}
-	for wt_o in wt_objects:
-		# logic: sum every value that are in the same day
-		# check if sum > 15, if yes, add to global_sum
-		key_code = wt_o.timestamp.day + wt_o.timestamp.month + wt_o.timestamp.year
-		if key_code in day_dict:
-			day_dict[key_code] += wt_o.value
-		else:
-			day_dict[key_code] = wt_o.value
+    wt_objects = WT.objects.all()
+    day_dict = {}
+    for wt_o in wt_objects:
+        # logic: sum every value that are in the same day
+        # check if sum > 15, if yes, add to global_sum
+        key_code = wt_o.timestamp.day + wt_o.timestamp.month + wt_o.timestamp.year
+        if key_code in day_dict:
+            day_dict[key_code] += wt_o.value
+        else:
+            day_dict[key_code] = wt_o.value
 
-	gdd = 0
-	for key, sum_val in day_dict.items():
-		if sum_val > 15 :
-			gdd += sum_val
-	
-	return HttpResponse(gdd)
+    gdd = 0
+    for key, sum_val in day_dict.items():
+        if sum_val > 15 :
+            gdd += sum_val
+    return HttpResponse(gdd)
