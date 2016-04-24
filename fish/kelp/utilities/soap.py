@@ -3,7 +3,7 @@ from suds import WebFault
 from suds.client import Client
 
 
-class SoapCalls:
+class SoapCalls(object):
     def __init__(self):
         try:
             self.interface = 'http://trcagauging.ca/dataapi/trcagaugingAPI.asmx?wsdl'
@@ -19,7 +19,9 @@ class SoapCalls:
         jsonData = self.client.service.GetAllLocationsInformation(DataFormat)
         return json.loads(jsonData)
 
-    def GetSensors(self, StationID, DataFormat):
+    def GetSensors(self, DataFormat, StationID=None):  # StationID is optional
+        if not StationID:
+            StationID=''
         jsonData = self.client.service.GetSensors(StationID, DataFormat)
         return json.loads(jsonData)
 
