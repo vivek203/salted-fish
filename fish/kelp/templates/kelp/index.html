@@ -129,7 +129,7 @@
             </div>
             <div class="row text-center">
 				<script src='https://maps.googleapis.com/maps/api/js?v=3.exp'></script>
-					<div style='overflow:hidden;height:550px;width:1000px;'>
+					<div style='overflow:hidden;height:550px;width:1000px;margin:0 auto;'>
 					<div id='gmap_canvas' style='height:550px;width:1000px;'></div>
 					<div><small><a href="http://embedgooglemaps.com">
 														embed google maps							
@@ -141,8 +141,8 @@
 							var myOptions = {zoom:10,center:new google.maps.LatLng(43.85261119523538,-79.42575632148434),mapTypeId:google.maps.MapTypeId.TERRAIN};
 							map = new google.maps.Map(document.getElementById('gmap_canvas'), myOptions);
 							marker1 = new google.maps.Marker({map: map,position: new google.maps.LatLng(43.793,-79.472), label:'D'});
-							marker2 = new google.maps.Marker({map: map,position: new google.maps.LatLng(43.722,-79.722), label:'M'});
-							marker3 = new google.maps.Marker({map: map,position: new google.maps.LatLng(43.824,-79.075), label:'K'});
+							marker2 = new google.maps.Marker({map: map,position: new google.maps.LatLng(43.722,-79.722), label:'M', icon:"{% static 'kelp/img/markers/green_MarkerM.png' %}"});
+							marker3 = new google.maps.Marker({map: map,position: new google.maps.LatLng(43.824,-79.075), label:'K', icon:"{% static 'kelp/img/markers/green_MarkerK.png' %}"});
 							google.maps.event.addListener(marker1, 'click', function(){infowindow.open(map,marker1);});
 							google.maps.event.addListener(marker2, 'click', function(){infowindow.open(map,marker2);});
 							google.maps.event.addListener(marker3, 'click', function(){infowindow.open(map,marker3);});
