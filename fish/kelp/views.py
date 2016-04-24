@@ -32,3 +32,22 @@ def populate_current_water_temperature(request):
         wt.save()
 
     return HttpResponse('Written to database')
+
+def calc_gdd(request):
+	wt_objects = WT.objects.all()
+	day_dict = {}
+	for wt_o in wt_objects:
+		# logic: sum every value that are in the same day
+		# check if sum > 15, if yes, add to global_sum
+		key_code = wt_o.timestamp.day + wt_o.timestamp.month + wt_o.timestamp.year
+		if key_code in day_dict:
+			day_dict[key_code] += wt_o.value
+		else:
+			day_dict[key_code] = wt_o.value
+
+	gdd = 0
+	for key, sum_val in day_dict.items():
+		if sum_val > 15 :
+			gdd += sum_val
+	
+	return HttpResponse(gdd)
