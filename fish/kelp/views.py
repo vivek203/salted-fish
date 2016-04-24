@@ -7,6 +7,8 @@ from .models import WaterTemperature as WT
 <<<<<<< Updated upstream
 from .models import DischargeData as DD
 from .models import GDD
+from .models import SpawningStreamLength as SPWN
+from .models import DailyWaterTemperature as DWT
 from utilities.soap import SoapCalls
 import pytz
 import numpy as np
@@ -132,6 +134,24 @@ def get_station_num(sensors, sensorName):
     sensordata = filter(lambda x: x['SensorName'] in ['%s' % (sensorName)], sensors['Sensors'])
     stationNumbers = map(lambda x: x['StationNumber'], sensordata)
     return stationNumbers
+
+
+def populate_gdd_full(request):
+    dwt_objects = DWT.objects.all()
+    gddsum = 0
+    count = 0
+    for dwt_o in dwt_objects:
+        count = count + 1
+        print ("**** Writing GDD batch: %s" % count)
+        if dwt_o.value > 15:
+            gddsum += dwt_o.value
+            print 'updated gdd'
+        try:
+            dObj = GDD(gdd=np.around(gddsum, 1), timestamp=dwt_o.timestamp, spawning_likelihood='Not Suitable')
+            dObj.save()
+        except Exception:
+            continue
+    return HttpResponse('Written to GDD database FULL')
 
 def calc_gdd(request):
     wt_objects = WT.objects.all()
