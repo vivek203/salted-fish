@@ -66,13 +66,24 @@ class DataMap(object):
             for x in stationNumbers:
                 temperature_x = self.obj.GetTimeSeriesData(x, ['WT'], sDate.isoformat(),
                                                            eDate.isoformat(), self.DataFormat)
-                temperature_data = merge(temperature_data, temperature_x)
+                temperature_data = temperature_x[''](temperature_data, temperature_x)
+            print sDate.isoformat()
+            print eDate.isoformat()
         return temperature_data
 
     def get_station_num(self, sensorName):
         sensordata = filter(lambda x: x['SensorName'] in ['%s' % (sensorName)], self.sensors['Sensors'])
         stationNumbers = map(lambda x: x['StationNumber'], sensordata)
         return stationNumbers
+
+    def get_calculate_GDD(self, lastUpdatedDate):
+        delta = datetime.datetime.today() - lastUpdatedDate
+        if delta.days > 1:
+            return 1
+        return 0
+
+    def calculate_GDD(self, old_gdd, gdd_gain):
+        return old_gdd + gdd_gain
 #
 # dm = DataMap()
 # print (dm.sensors)
