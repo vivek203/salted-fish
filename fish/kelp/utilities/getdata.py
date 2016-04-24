@@ -26,19 +26,14 @@ class DataMap(object):
                 print x
         return discharge_data
 
-    def get_water_temp_data(self):
-
-        sDate = datetime.datetime(2016, 1, 1)
-        eDate = sDate + datetime.timedelta(days=2)
+    def get_water_temp_data(self, sDate):
+        eDate = datetime.datetime.today().isoformat().split('.')[0]
         stationNumbers = self.get_station_num('WT')
         temperature_data = None
-        while eDate < datetime.datetime(2016, 1, 4):
-            sDate = eDate + datetime.timedelta(days=1)
-            eDate = eDate + datetime.timedelta(days=10)
-            for x in stationNumbers:
-                temperature_x = self.obj.GetTimeSeriesData(x, ['WT'], sDate.isoformat(),
-                                                    eDate.isoformat(), self.DataFormat)
-                temperature_data = merge(temperature_data, temperature_x)
+        for x in stationNumbers:
+            temperature_x = self.obj.GetTimeSeriesData(x, ['WT'], sDate,
+                                                eDate, self.DataFormat)
+            temperature_data = merge(temperature_data, temperature_x)
         return temperature_data
 
 
@@ -61,10 +56,13 @@ class DataMap(object):
         sDate = datetime.datetime(2016, 1, 1)
         eDate = sDate + datetime.timedelta(days=9)
         stationNumbers = self.get_station_num('WT')
+        temperature_data = None
+        count=0
         while eDate < datetime.datetime.today():
+            count = count+1
+            print ("**** Writing batch: %s" % count)
             sDate = eDate + datetime.timedelta(days=1)
             eDate = eDate + datetime.timedelta(days=10)
-            temperature_data = None
             for x in stationNumbers:
                 temperature_x = self.obj.GetTimeSeriesData(x, ['WT'], sDate.isoformat(),
                                                            eDate.isoformat(), self.DataFormat)
