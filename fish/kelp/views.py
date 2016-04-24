@@ -4,7 +4,6 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from utilities.getdata import DataMap
 from .models import WaterTemperature as WT
-<<<<<<< Updated upstream
 from .models import DischargeData as DD
 from .models import GDD
 from .models import SpawningStreamLength as SPWN
@@ -12,11 +11,7 @@ from .models import DailyWaterTemperature as DWT
 from utilities.soap import SoapCalls
 import pytz
 import numpy as np
-=======
-import datetime
-import pytz
 import csv
->>>>>>> Stashed changes
 
 def index(request):
     return render(request, 'kelp/index.html')
