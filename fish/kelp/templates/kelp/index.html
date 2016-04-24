@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <meta http-equiv="refresh" content="60">
+    <!-- meta http-equiv="refresh" content="60"-->
 
     <title>Carp Diem - Monitoring of Asian Carp Spawning</title>
 
@@ -143,7 +143,7 @@
 							map = new google.maps.Map(document.getElementById('gmap_canvas'), myOptions);
 							marker1 = new google.maps.Marker({map: map,position: new google.maps.LatLng(43.793,-79.472), label:'D'});
 							marker2 = new google.maps.Marker({map: map,position: new google.maps.LatLng(43.722,-79.722), label:'M', icon:"{% static 'kelp/img/markers/green_MarkerM.png' %}"});
-							marker3 = new google.maps.Marker({map: map,position: new google.maps.LatLng(43.824,-79.075), label:'K', icon:"{% static 'kelp/img/markers/green_MarkerK.png' %}"});
+							marker3 = new google.maps.Marker({map: map,position: new google.maps.LatLng(43.824,-79.075), label:'K', icon:"{% static 'kelp/img/markers/green_MarkerK.png' %}", opacity:1.0});
 							google.maps.event.addListener(marker1, 'click', function(){infowindow.open(map,marker1);});
 							google.maps.event.addListener(marker2, 'click', function(){infowindow.open(map,marker2);});
 							google.maps.event.addListener(marker3, 'click', function(){infowindow.open(map,marker3);});
@@ -240,11 +240,11 @@
 						.x(function(d) { return ( x(d.date) ); })
 						.y(function(d) { return y(d.temperature); });
 
-				d3.tsv("{% static 'kelp/data/dateTemp.tsv' %}", type, function(error, data) {
+				d3.tsv("{% static 'kelp/data/data1.tsv' %}", type, function(error, data) {
 				  if (error) throw error;
 
 				  x.domain(data.map(function(d) { return d.date; }));
-				  y.domain([0, d3.max(data, function(d) { return d.temperature; })]);
+				  y.domain([0, d3.max(data, function(d) { return (d.temperature+10); })]);
 				  y1.domain([0, d3.max(data, function(d) { return 1000; })]);
 
 				  svg0.append("g")
