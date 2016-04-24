@@ -1,7 +1,6 @@
 import datetime
 from soap import SoapCalls
 from pprint import pformat
-from pandas.io.json import json_normalize
 from jsonmerge import merge
 
 class DataMap(object):
