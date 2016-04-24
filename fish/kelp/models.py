@@ -45,6 +45,7 @@ class SpawningStreamLength(models.Model):
     class Meta:
         unique_together = (("station_id", "timestamp"),)
 
+
 class GDD(models.Model):
     gdd = models.FloatField()
     timestamp = models.DateTimeField(unique=True)
