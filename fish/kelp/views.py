@@ -4,11 +4,17 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from utilities.getdata import DataMap
 from .models import WaterTemperature as WT
+<<<<<<< Updated upstream
 from .models import DischargeData as DD
 from .models import GDD
 from utilities.soap import SoapCalls
 import pytz
 import numpy as np
+=======
+import datetime
+import pytz
+import csv
+>>>>>>> Stashed changes
 
 def index(request):
     return render(request, 'kelp/index.html')
@@ -144,3 +150,20 @@ def calc_gdd(request):
         if sum_val > 15 :
             gdd += sum_val
     return HttpResponse(gdd)
+
+def get_temperature_csv(request):
+    response = HttpResponse(content_type='text/tsv')
+    response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+
+    writer = csv.writer(response, delimiter='\t')
+    writer.writerow(['date', 'temperature'])
+
+    temps = WT.objects.filter(station_id='HY040', timestamp__lte=datetime.datetime.today(), timestamp__gt=datetime.datetime.today()-datetime.timedelta(days=15))
+    for temp in temps:
+        writer.writerow([temp.timestamp, temp.value])
+    # writer.writerow(['1', '5'])
+    # writer.writerow(['2', '10'])
+    # writer.writerow(['3', '15'])
+
+    return response
+>>>>>>> Stashed changes
