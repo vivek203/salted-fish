@@ -106,9 +106,9 @@
             </div>
             <div class="row text-center">
                 <div class="col-md-15">
-                    <span class="fa-stack fa-4x">
+                    <span class="fa-stack fa-5x">
                         <!--i class="fa fa-circle fa-stack-2x text-primary"></i-->
-                        <img alt="" class="img-responsive img-circle" src="/static/kelp/img/services/serviceCarp.jpg" style="height:80px;width:80px;">
+                        <img alt="" class="img-responsive img-circle" src="/static/kelp/img/services/serviceCarp.jpg" style="height:140px;width:140px;">
                     </span>
                     <h4 class="service-heading">About Asian Carps and Threats</h4>
                     <p class="text-muted" style="width:800px;margin:auto;text-align:left;">The term “Asian carps” collectively refers to four species of carps: Bighead, Silver, Grass and Black carps. All are members of the cyprinid family, which includes carps and several varieties of minnows.<br/> <br/>
@@ -215,6 +215,7 @@
 			var svg = d3.select("#chart1container").append("svg")
 				.attr("width", width + margin.left + margin.right)
 				.attr("height", height + margin.top + margin.bottom)
+				.attr("style","display:block;margin:auto;")
 			  .append("g")
 				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -293,6 +294,7 @@
 				var svg2 = d3.select("#chart2container").append("svg")
 					.attr("width", width + margin.left + margin.right)
 					.attr("height", height + margin.top + margin.bottom)
+					.attr("style","display:block;margin:auto;")
 				  .append("g")
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 			
