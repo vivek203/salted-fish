@@ -4,5 +4,6 @@ from . import views
 
 urlpatterns = [
      url(r'^$', views.index, name='index'),
-     url(r'^populatedb/$', views.populate_db, name='populate_db'),
+     url(r'^populatewt/$', views.populate_water_temperature, name='populate_wt'),
+     url(r'^populatewtc/$', views.populate_current_water_temperature, name='populate_wtc'),
 ]
