@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta http-equiv="refresh" content="60">
 
     <title>Carp Diem - Monitoring of Asian Carp Spawning</title>
 
@@ -182,6 +183,136 @@
 				</tr>
 			</table>
         </div>
+        
+        <div class="container" id="chart0container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h3 class="section-heading">GDD</h3>
+                </div>
+            </div>
+        </div>
+		<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+		<script>
+
+			var margin = {top: 20, right: 40, bottom: 30, left: 40},
+					width = 960 - margin.left - margin.right,
+					height = 550 - margin.top - margin.bottom;
+
+				var x = d3.scale.ordinal()
+					.rangeRoundBands([0, width], .1);
+
+				var y = d3.scale.linear()
+					.range([height, 0]);
+		
+				var y1 = d3.scale.linear()
+					.range([height, 0]);
+
+				var xAxis = d3.svg.axis()
+					.scale(x)
+					.orient("bottom");
+
+				var yAxis = d3.svg.axis()
+					.scale(y)
+					.orient("left");
+			
+				var yAxisRight = d3.svg.axis()
+					.scale(y1)
+					.orient("right");
+					// .ticks(5); 
+
+				var svg0 = d3.select("#chart0container").append("svg")
+					.attr("width", width + margin.left + margin.right)
+					.attr("height", height + margin.top + margin.bottom)
+					.attr("style","display:block;margin:auto;")
+				  .append("g")
+					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			
+				var line0 = d3.svg.line()
+						.x(function(d) { return ( x(d.date) ); })
+						.y(function(d) { return y1(950); });
+						
+				var line1 = d3.svg.line()
+						.x(function(d) { return ( x(d.date) ); })
+						.y(function(d) { return y1(600); });
+						
+				var line2 = d3.svg.line()
+						.interpolate("basis") 
+						.x(function(d) { return ( x(d.date) ); })
+						.y(function(d) { return y(d.temperature); });
+
+				d3.tsv("{% static 'kelp/data/dateTemp.tsv' %}", type, function(error, data) {
+				  if (error) throw error;
+
+				  x.domain(data.map(function(d) { return d.date; }));
+				  y.domain([0, d3.max(data, function(d) { return d.temperature; })]);
+				  y1.domain([0, d3.max(data, function(d) { return 1000; })]);
+
+				  svg0.append("g")
+					  .attr("class", "x axis")
+					  .attr("transform", "translate(0," + height + ")")
+					  .call(xAxis)
+					.append("text")
+					  .style("text-anchor", "end")
+					  .attr("x", 450)
+					  .attr("dy", "2.65em")
+					  .text("Date");
+
+					svg0.append("g")
+					  .attr("class", "y axis")
+					  .call(yAxis)
+					.append("text")
+					  .attr("transform", "rotate(-90)")
+					  .attr("y", 6)
+					  .attr("dy", ".71em")
+					  .style("text-anchor", "end")
+					  .text("Temperature");
+			  
+					svg0.append("g")				
+						.attr("class", "y axis")	
+						.attr("transform", "translate(" + width + " ,0)")
+						.style("fill", "red")		
+						.call(yAxisRight);
+
+				  /* svg0.selectAll(".bar")
+					  .data(data)
+					.enter().append("rect")
+					  .attr("class", "bar")
+					  .attr("x", function(d) { return x(d.date); })
+					  .attr("width", x.rangeBand())
+					  .attr("y", function(d) { return y(d.temperature); })
+					  .attr("height", function(d) { return height - y(d.temperature); });
+			  	*/
+			  		
+			  		
+			
+				
+					svg0.append("path")
+					  .datum(data)
+					  .attr("class", "line")
+					  .attr("style","stroke:red")
+					  .attr("d", line0);
+					  
+					svg0.append("path")
+					  .datum(data)
+					  .attr("class", "line")
+					  .attr("style","stroke:red")
+					  .attr("d", line1);
+					  
+					svg0.append("path")
+					  .datum(data)
+					  .attr("class", "line")
+					  .attr("style","stroke:black")					  
+					  .attr("d", line2);
+			  
+			  
+				});
+
+				function type(d) {
+				  d.temperature = +d.temperature;
+				  return d;
+				}
+
+		</script>
 
         <div class="container" id="chart1container">
             <div class="row">
